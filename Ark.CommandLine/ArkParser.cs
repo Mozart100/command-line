@@ -109,9 +109,11 @@ namespace Ark.CommandLine
         //--------------------------------------------------------------------------------------------------------------------------------------
         //--------------------------------------------------------------------------------------------------------------------------------------
 
-        private class TableContent<TTarget> : IDictionary<string, FullPropertyDescription> where TTarget : new()
+        private class TableContent : IDictionary<string, FullPropertyDescription>
+        //where TTarget : new ()
+
         {
-            private readonly TTarget _target;
+            private readonly TTargetClass _target;
             private readonly Dictionary<string, FullPropertyDescription> _tableContent;
 
             //--------------------------------------------------------------------------------------------------------------------------------------
@@ -119,7 +121,7 @@ namespace Ark.CommandLine
 
             public TableContent()
             {
-                _target = new TTarget();
+                _target = new TTargetClass();
                 _tableContent = new Dictionary<string, FullPropertyDescription>();
             }
 
@@ -147,14 +149,23 @@ namespace Ark.CommandLine
                 _tableContent.Add(key, value);
             }
 
+            //--------------------------------------------------------------------------------------------------------------------------------------
+            //--------------------------------------------------------------------------------------------------------------------------------------
+
+            public TTargetClass RetreiveInstance()
+            {
+                return _target;
+            }
+
             public void SetPropertyWithValue(string propName, string value)
             {
                 if (_tableContent[propName].PropertyInfo.PropertyType == typeof(char))
                 {
                     _tableContent[propName].PropertyInfo.SetValue(_target, value.ElementAt(0));
+
                 }
 
-                if (_tableContent[propName].PropertyInfo.PropertyType == typeof (int))
+                if (_tableContent[propName].PropertyInfo.PropertyType == typeof(int))
                 {
                     _tableContent[propName].PropertyInfo.SetValue(_target, int.Parse(value));
                 }
@@ -163,8 +174,6 @@ namespace Ark.CommandLine
                 {
                     _tableContent[propName].PropertyInfo.SetValue(_target, value);
                 }
-
-
             }
 
             //--------------------------------------------------------------------------------------------------------------------------------------
@@ -208,13 +217,12 @@ namespace Ark.CommandLine
             }
 
             //--------------------------------------------------------------------------------------------------------------------------------------
+            //--------------------------------------------------------------------------------------------------------------------------------------
 
             public void Add(KeyValuePair<string, FullPropertyDescription> item)
             {
                 throw new NotImplementedException();
             }
-
-            //--------------------------------------------------------------------------------------------------------------------------------------
 
             //--------------------------------------------------------------------------------------------------------------------------------------
 
@@ -291,7 +299,7 @@ namespace Ark.CommandLine
 
         private List<string> _errors;
 
-        private TableContent<TTargetClass> _tableContent;
+        private TableContent _tableContent;
 
         //--------------------------------------------------------------------------------------------------------------------------------------
         //--------------------------------------------------------------------------------------------------------------------------------------
@@ -306,10 +314,10 @@ namespace Ark.CommandLine
         //--------------------------------------------------------------------------------------------------------------------------------------
 
 
-        public ParserResult Parse(string[] arguments, string delimiter)
+        public ParserResult<TTargetClass> Parse(string[] arguments, string delimiter)
         {
 
-            _tableContent = new TableContent<TTargetClass>();
+            _tableContent = new TableContent();
 
 
 
@@ -328,8 +336,9 @@ namespace Ark.CommandLine
         //--------------------------------------------------------------------------------------------------------------------------------------
         //--------------------------------------------------------------------------------------------------------------------------------------
 
-        private ParserResult CreateTableContent(string[] arguments)
+        private ParserResult<TTargetClass> CreateTableContent(string[] arguments)
         {
+            var instance = new TTargetClass();
             //TODO multi exception not solely single.
             foreach (var property in typeof(TTargetClass).GetProperties())
             {
@@ -347,7 +356,9 @@ namespace Ark.CommandLine
                 }
                 catch (ArgumentException argumentException)
                 {
-                    return new ParserResult(isSucceeded: false, exception: new PropertyNameDuplicationException("stam"));
+                    return new ParserResult<TTargetClass>(isSucceeded: false,
+                                targetClass: instance,
+                                exception: new PropertyNameDuplicationException("stam"));
                 }
                 catch (Exception exceprtion)
                 {
@@ -363,12 +374,12 @@ namespace Ark.CommandLine
 
             }
 
-            return new ParserResult(isSucceeded: true, exception: null);
+            return new ParserResult<TTargetClass>(isSucceeded: true, exception: null, targetClass: instance);
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
 
-        private ParserResult CreateInstance(IReadOnlyList<string> mainArguments, string delimiter)
+        private ParserResult<TTargetClass> CreateInstance(IReadOnlyList<string> mainArguments, string delimiter)
         {
             var arguments = mainArguments.Select(x => x.Trim()).Select(x => x).ToList();
             var anticipating = 0; // 0 - init 1-cmd  2-regular without params 3-with params
@@ -385,7 +396,7 @@ namespace Ark.CommandLine
 
                 if (arguments[i][0].ToString() == delimiter)
                 {
-                    arguments[i] = arguments[i].Remove(0, 1);
+                    arguments[i] = arguments[i].Remove(0, 1).Trim();
                     anticipating = 1;
                     continue;
                 }
@@ -415,7 +426,7 @@ namespace Ark.CommandLine
 
 
 
-            return new ParserResult(isSucceeded: true, exception: null);
+            return new ParserResult<TTargetClass>(isSucceeded: true, exception: null, targetClass: _tableContent.RetreiveInstance());
         }
     }
 }
