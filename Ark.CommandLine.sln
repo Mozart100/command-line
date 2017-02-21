@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ark.CommandLine", "Ark.CommandLine\Ark.CommandLine.csproj", "{9558868E-B1D3-49AF-822D-537CC8BFDC0E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ark.CommandLine.UnitTests", "Ark.CommandLine.Tests\Ark.CommandLine.UnitTests.csproj", "{280BFE0C-16F8-4624-BED2-CB9F18944FB2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9558868E-B1D3-49AF-822D-537CC8BFDC0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9558868E-B1D3-49AF-822D-537CC8BFDC0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9558868E-B1D3-49AF-822D-537CC8BFDC0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9558868E-B1D3-49AF-822D-537CC8BFDC0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{280BFE0C-16F8-4624-BED2-CB9F18944FB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{280BFE0C-16F8-4624-BED2-CB9F18944FB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{280BFE0C-16F8-4624-BED2-CB9F18944FB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{280BFE0C-16F8-4624-BED2-CB9F18944FB2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
