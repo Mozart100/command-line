@@ -160,30 +160,36 @@ namespace Ark.CommandLine
 
             public void SetPropertyWithValue(string propName, string value)
             {
+              
                 if (_tableContent[propName].PropertyInfo.PropertyType == typeof(int))
                 {
                     _tableContent[propName].PropertyInfo.SetValue(_target, int.Parse(value));
+                    return;
                 }
 
                 if (_tableContent[propName].PropertyInfo.PropertyType.IsEnum == true)
                 {
                     _tableContent[propName].PropertyInfo.SetValue(_target, Enum.Parse(_tableContent[propName].PropertyInfo.PropertyType, value: value, ignoreCase: true));
+                    return;
                 }
 
                 if (_tableContent[propName].PropertyInfo.PropertyType == typeof(FileInfo))
                 {
                     _tableContent[propName].PropertyInfo.SetValue(_target, new FileInfo(value));
+                    return;
                 }
 
                 if (_tableContent[propName].PropertyInfo.PropertyType == typeof(DirectoryInfo))
                 {
                     _tableContent[propName].PropertyInfo.SetValue(_target, new DirectoryInfo(value));
+                    return;
                 }
 
 
                 if (_tableContent[propName].PropertyInfo.PropertyType == typeof(char))
                 {
                     _tableContent[propName].PropertyInfo.SetValue(_target, value.ElementAt(0));
+                    return;
 
                 }
 
@@ -335,8 +341,6 @@ namespace Ark.CommandLine
         {
 
             _tableContent = new TableContent();
-
-
 
             var result = CreateTableContent(arguments);
 

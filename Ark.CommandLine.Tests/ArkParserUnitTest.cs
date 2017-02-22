@@ -99,18 +99,11 @@
         [ArkCmdDesc(fullName: "directoryPath", shortName: "dp", isRequire: true)]
         public DirectoryInfo DirectoryPath { get; set; }
 
-
-
-
     }
 
     internal class ClassWithPropertyDuplications
     {
-        public ClassWithPropertyDuplications()
-        {
-            int x = 0;
-        }
-
+       
         [ArkCmdDesc(fullName: "number", shortName: "num", isRequire: true)]
         public int Number { get; set; }
 
@@ -118,33 +111,5 @@
         public string Name { get; set; }
 
     }
-
-    public enum ForOlegType
-    {
-        Flag1, Flag2
-    }
-
-    internal class ForOleg
-    {
-
-        [ArkCmdDesc(fullName: "number", shortName: "num", isRequire: true)]
-        public int Number { get; set; }
-
-
-        [ArkCmdDesc(fullName: "oleg", shortName: "ol", isRequire: true)]
-        public ForOlegType Name { get; set; }
-
-
-        [ArkCmdArgumentsDesc("--save")]
-        [ArkCmdArgumentsDesc("--save", "topath")]
-        [ArkCmdDesc(fullName: "copyTo", shortName: "cpt", isRequire: true)]
-        public string CopyItem { get; set; }
-
-
-        [ArkCmdDesc(fullName: "ItemPath", shortName: "ip", isRequire: true)]
-        public string ItemPath { get; set; }
-
-
-        //  -ip  "c:\suorce\txtme.txt"  -cpt "c:\stam\txtme.txt
-    }
+    
 }
