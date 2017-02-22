@@ -1,5 +1,7 @@
 ﻿namespace Ark.CommandLine.UnitTests
 {
+    using System.IO;
+    using System.Reflection;
     using Ark.CommandLine.Attribute;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Ark.CommandLine.Exceptions;
@@ -7,6 +9,19 @@
     [TestClass]
     public class ArkParserUnitTest
     {
+        private static TestContext _testContext;
+
+        //--------------------------------------------------------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------------------------------------------------------------
+
+        [ClassInitialize]
+        public static void ClassInstance(TestContext testContext)
+        {
+            _testContext = testContext;
+
+        }
+
+        //--------------------------------------------------------------------------------------------------------------------------------------
 
         [TestInitialize]
         public void TestInitialize()
@@ -32,15 +47,31 @@
         [TestMethod]
         public void ArkParser_ValidClassWithArguments()
         {
-            var number = 10;
-            var name = "myName";
+            const int number = 10;
+            const string name = "myName";
+            const ValidArgumentClass.FlagType enm = ValidArgumentClass.FlagType.Flag1;
+
+            var directoryInfo = new DirectoryInfo(_testContext.DeploymentDirectory);
+            var fileInfo = new FileInfo(Path.Combine(_testContext.DeploymentDirectory, MethodInfo.GetCurrentMethod().Name + ".txt"));
+
+            File.WriteAllText(fileInfo.FullName, "kukariku");
+
+
             var instance = new ArkParser<ValidArgumentClass>();
-            var result = instance.Parse(new[] { "-num", number.ToString(), "-name", name , "- fg" , "flag1" }, "-");
+            var result = instance.Parse(new[]
+            {
+                "-num", number.ToString(), "-name", name , "- fg" , "flag1" ,
+                "-fp" , fileInfo.FullName,
+                "-dp" , directoryInfo.FullName,
+            }, "-");
 
 
             Assert.AreEqual(expected: true, actual: result.IsSucceeded);
             Assert.AreEqual(expected: number, actual: result.TargetClass.Number);
             Assert.AreEqual(expected: name, actual: result.TargetClass.Name);
+            Assert.AreEqual(expected: enm, actual: result.TargetClass.Flag);
+            Assert.AreEqual(expected: fileInfo.FullName, actual: result.TargetClass.FilePath.FullName);
+            Assert.AreEqual(expected: directoryInfo.FullName, actual: result.TargetClass.DirectoryPath.FullName);
 
         }
 
@@ -48,7 +79,7 @@
 
     internal class ValidArgumentClass
     {
-        public enum FlagType
+        internal enum FlagType
         {
             Flag1, Flag2
         }
@@ -59,9 +90,15 @@
         [ArkCmdDesc(fullName: "name", shortName: "nm", isRequire: true)]
         public string Name { get; set; }
 
-
         [ArkCmdDesc(fullName: "flag", shortName: "fg", isRequire: true)]
         public FlagType Flag { get; set; }
+
+        [ArkCmdDesc(fullName: "filePath", shortName: "fp", isRequire: true)]
+        public FileInfo FilePath { get; set; }
+
+        [ArkCmdDesc(fullName: "directoryPath", shortName: "dp", isRequire: true)]
+        public DirectoryInfo DirectoryPath { get; set; }
+
 
 
 

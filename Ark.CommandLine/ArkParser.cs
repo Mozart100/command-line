@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace Ark.CommandLine
 {
     using System.Collections;
+    using System.IO;
     using System.Reflection;
     using Ark.CommandLine.Attribute;
     using Ark.CommandLine.Exceptions;
@@ -159,15 +160,31 @@ namespace Ark.CommandLine
 
             public void SetPropertyWithValue(string propName, string value)
             {
+                if (_tableContent[propName].PropertyInfo.PropertyType == typeof(int))
+                {
+                    _tableContent[propName].PropertyInfo.SetValue(_target, int.Parse(value));
+                }
+
+                if (_tableContent[propName].PropertyInfo.PropertyType.IsEnum == true)
+                {
+                    _tableContent[propName].PropertyInfo.SetValue(_target, Enum.Parse(_tableContent[propName].PropertyInfo.PropertyType, value: value, ignoreCase: true));
+                }
+
+                if (_tableContent[propName].PropertyInfo.PropertyType == typeof(FileInfo))
+                {
+                    _tableContent[propName].PropertyInfo.SetValue(_target, new FileInfo(value));
+                }
+
+                if (_tableContent[propName].PropertyInfo.PropertyType == typeof(DirectoryInfo))
+                {
+                    _tableContent[propName].PropertyInfo.SetValue(_target, new DirectoryInfo(value));
+                }
+
+
                 if (_tableContent[propName].PropertyInfo.PropertyType == typeof(char))
                 {
                     _tableContent[propName].PropertyInfo.SetValue(_target, value.ElementAt(0));
 
-                }
-
-                if (_tableContent[propName].PropertyInfo.PropertyType == typeof(int))
-                {
-                    _tableContent[propName].PropertyInfo.SetValue(_target, int.Parse(value));
                 }
 
                 if (_tableContent[propName].PropertyInfo.PropertyType == typeof(string))
