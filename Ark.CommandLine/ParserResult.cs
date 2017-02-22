@@ -5,15 +5,15 @@
     public class ParserResult
     {
         private readonly bool _isSucceeded;
-        private readonly Exception _exception;
+        private readonly Exception [] _exceptions;
 
         //--------------------------------------------------------------------------------------------------------------------------------------
         //--------------------------------------------------------------------------------------------------------------------------------------
 
-        public ParserResult(bool isSucceeded, Exception exception)
+        public ParserResult(bool isSucceeded,params  Exception [] exceptions)
         {
             _isSucceeded = isSucceeded;
-            _exception = exception;
+            _exceptions = exceptions;
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
@@ -22,7 +22,7 @@
         public bool IsSucceeded => _isSucceeded;
 
         //--------------------------------------------------------------------------------------------------------------------------------------
-        public Exception Exception => _exception;
+        public Exception [] Exceptions => _exceptions;
     }
 
     public class ParserResult<TTargetClass> : ParserResult where TTargetClass : new()
@@ -32,8 +32,8 @@
         //--------------------------------------------------------------------------------------------------------------------------------------
         //--------------------------------------------------------------------------------------------------------------------------------------
 
-        public ParserResult(bool isSucceeded, Exception exception, TTargetClass targetClass)
-            : base(isSucceeded: isSucceeded, exception: exception)
+        public ParserResult(bool isSucceeded, Exception [] exceptions, TTargetClass targetClass)
+            : base(isSucceeded: isSucceeded, exceptions: exceptions)
         {
             _targetClass = targetClass;
         }

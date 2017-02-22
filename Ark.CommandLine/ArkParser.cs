@@ -111,7 +111,6 @@ namespace Ark.CommandLine
         //--------------------------------------------------------------------------------------------------------------------------------------
 
         private class TableContent : IDictionary<string, FullPropertyDescription>
-        //where TTarget : new ()
 
         {
             private readonly TTargetClass _target;
@@ -360,7 +359,9 @@ namespace Ark.CommandLine
         private ParserResult<TTargetClass> CreateTableContent(string[] arguments)
         {
             var instance = new TTargetClass();
-            //TODO multi exception not solely single.
+            var exceptions = new List<Exception>();
+
+            //TODO multi Exceptions not solely single.
             foreach (var property in typeof(TTargetClass).GetProperties())
             {
                 var cmdDescription = property.GetCustomAttributes<ArkCmdDescAttribute>().Single();
@@ -377,14 +378,13 @@ namespace Ark.CommandLine
                 }
                 catch (ArgumentException argumentException)
                 {
-                    return new ParserResult<TTargetClass>(isSucceeded: false,
-                                targetClass: instance,
-                                exception: new PropertyNameDuplicationException("stam"));
+                    exceptions.Add(new PropertyNameDuplicationException("stam"));
+                    continue;
                 }
-                catch (Exception exceprtion)
+                catch (Exception exception)
                 {
-                    //TODO
-                    int x = 0;
+                    exceptions.Add(exception);
+                    continue;
                 }
 
                 foreach (var cmdArgs in property.GetCustomAttributes<ArkCmdArgumentsDescAttribute>())
@@ -395,7 +395,7 @@ namespace Ark.CommandLine
 
             }
 
-            return new ParserResult<TTargetClass>(isSucceeded: true, exception: null, targetClass: instance);
+            return new ParserResult<TTargetClass>(isSucceeded: !exceptions.Any(), exceptions: exceptions.ToArray(), targetClass: instance);
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
@@ -447,7 +447,7 @@ namespace Ark.CommandLine
 
 
 
-            return new ParserResult<TTargetClass>(isSucceeded: true, exception: null, targetClass: _tableContent.RetreiveInstance());
+            return new ParserResult<TTargetClass>(isSucceeded: true, exceptions: null, targetClass: _tableContent.RetreiveInstance());
         }
     }
 }

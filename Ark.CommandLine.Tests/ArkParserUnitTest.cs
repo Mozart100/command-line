@@ -1,6 +1,7 @@
 ﻿namespace Ark.CommandLine.UnitTests
 {
     using System.IO;
+    using System.Linq;
     using System.Reflection;
     using Ark.CommandLine.Attribute;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -39,7 +40,7 @@
 
 
             Assert.AreEqual(expected: false, actual: result.IsSucceeded);
-            Assert.IsTrue(result.Exception is PropertyNameDuplicationException);
+            Assert.IsTrue(result.Exceptions.First() is PropertyNameDuplicationException);
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
